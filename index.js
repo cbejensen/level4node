@@ -23,7 +23,7 @@ app.post('/books', function(req, res, next) {
     // req.body (request body) === {"name": <book name>}
     console.log('Received POST: ' + req.body.name)
     books.push(req.body.name);
-    res.send('Book collection: ' + books);
+    res.send(books);
 })
 
 // PUT changes info
