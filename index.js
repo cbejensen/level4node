@@ -23,13 +23,21 @@ app.listen(port, function() {
 // query is 'author=JK_Rowling&year=2000'
 // express will take everything after question mark
 // and puts it in req.query object
-
 /*
 req.query = {
     rating: 8
 }
 */
-
 // search for books with rating of 10
 // https://site.com/books?rating=10
-// 
+
+
+// STATUS CODES
+// 200 === OK
+// 204 === No content
+    // might see this as a response to a delete request
+// The 400's are generally used to say the client sent something wrong
+    // 404 === Not found
+    // 401 / 402 === Not signed in / not authorized
+// 500 === internal server error
+

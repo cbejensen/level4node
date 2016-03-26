@@ -22,7 +22,7 @@ module.exports = {
     update: function(req, res, next) {
         // req.body === {
         //      position: <num>,
-        //      newName
+        //      newName: <name>
         // }
         console.log('Received PUT: ' + req.body.newName + ' at position ' + req.body.position)
         books[req.body.position] = req.body.newName;
