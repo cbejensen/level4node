@@ -4,40 +4,70 @@ var booksController = require('./controllers/booksController');
 
 var app = express();
 
-// parse body as json
-// assigns result to req.body
+// 1 - this function is called first
+// it has a next() function at the end
+// this allows the next function to be called
 app.use(bodyParser.json());
 
+// 2 - because the first function calls next()
+// this function will execute
+app.use(function(req, res, next) {
+    /*
+    if(req.body.something === 4) {
+        console.log('It was 4!')
+        next(); //this skips to the next function
+    }
+    */
+    // code below this will not run if req.body.something === 4
+    next()
+})
+
+// 3 - this function will only run if
+// previous function calls next()
+app.use(function(req, res, next) {
+    console.log('Previous function called next!');
+    next();
+})
+
+// let's try this another way
+// by declaring the functions first
+var func1 = function(req, res, next) {
+    console.log('func1');
+    next();
+}
+
+var func2 = function(req, res, next) {
+    console.log('func2');
+    next();
+}
+
+// 4 - we can plug in our functions like this:
+app.use(func1, func2);
+// but you still need to call next() to move to next function
+
+
+// now let's try authentication with next()
+// delete request must pass in query with admin=true
+var isAdmin = function(req, res, next) {
+    if (req.query.admin === 'true') {
+        next(); // only move to next function if admin
+    } else {
+        res.status(401).send("Access denied - only admins are allowed!")
+    }
+}
+//note app.delete func below
+
+// 3.1
 app.get('/books', booksController.index);
+// 3.2
 app.post('/books', booksController.build)
+// 3.3
 app.put('/books', booksController.update)
-app.delete('/books/:num', booksController.destroy)
+// 3.4
+app.delete('/books/:num', isAdmin, booksController.destroy)
 
 var port = 8000;
 app.listen(port, function() {
     console.log('Listening on port ' + port);
 })
-
-// QUERY PARAMS
-// https://site.com/books?author=JK_Rowling&year=2000
-// query is 'author=JK_Rowling&year=2000'
-// express will take everything after question mark
-// and puts it in req.query object
-/*
-req.query = {
-    rating: 8
-}
-*/
-// search for books with rating of 10
-// https://site.com/books?rating=10
-
-
-// STATUS CODES
-// 200 === OK
-// 204 === No content
-    // might see this as a response to a delete request
-// The 400's are generally used to say the client sent something wrong
-    // 404 === Not found
-    // 401 / 402 === Not signed in / not authorized
-// 500 === internal server error
 
